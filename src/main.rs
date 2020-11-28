@@ -6,8 +6,8 @@ mod systems;
 
 pub mod prelude {
     pub use bevy::prelude::*;
-    pub const ARENA_WIDTH: i32 = 20;
-    pub const ARENA_HEIGHT: i32 = 20;
+    pub const ARENA_WIDTH: i32 = 100;
+    pub const ARENA_HEIGHT: i32 = 100;
     pub use crate::map::*;
     pub use crate::map_builder::*;
     pub use crate::spawners::*;
@@ -17,6 +17,7 @@ pub mod prelude {
 
 use prelude::*;
 use rand::prelude::ThreadRng;
+use bevy::app::startup_stage;
 
 fn main() {
     App::build()
@@ -28,9 +29,9 @@ fn main() {
             ..Default::default()
         })
         .add_startup_system(setup.system())
-        .add_system(spawn_player.system())
-        .add_system(spawn_monster.system())
-        .add_system(spawn_rooms.system())
+        .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_rooms.system())
+        .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player.system())
+        .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_monster.system())
         .add_system(size_scaling.system())
         .add_system(point_translation.system())
         .add_plugins(DefaultPlugins)
@@ -42,9 +43,9 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
 
     commands.insert_resource(Materials {
         wall_material: materials.add(Color::hex("22223b").unwrap().into()),
-        player_material: materials.add(Color::hex("d62828").unwrap().into()),
+        player_material: materials.add(Color::hex("06d6a0").unwrap().into()),
         floor_material: materials.add(Color::hex("ffe8d6").unwrap().into()),
-        monster_material: materials.add(Color::hex("ffe800").unwrap().into()),
+        monster_material: materials.add(Color::hex("d62828").unwrap().into()),
     });
 
     let mut rng: ThreadRng = rand::thread_rng();

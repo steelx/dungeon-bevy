@@ -35,41 +35,40 @@ pub fn spawn_monster(mut commands: Commands, map_builder: Res<MapBuilder>, mater
         });
 }
 
-pub fn spawn_rooms(mut commands: Commands, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
+pub fn spawn_rooms(mut commands: Commands, windows: Res<Windows>, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
     // dbg!(&map_builder.rooms);
-    map_builder
-        .rooms
-        .iter()
-        .for_each(|r| {
-            for y in r.y1..r.y2 {
-                for x in r.x1..r.x2 {
-                    let pos = Point::new(x, y);
-                    let idx = map_idx(x, y);
-                    match map_builder.map.tiles[idx] {
-                        TileType::Floor => {
-                            commands
-                                .spawn(SpriteComponents {
-                                    sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-                                    material: materials.floor_material.clone(),
-                                    ..Default::default()
-                                })
-                                .with(TileType::Floor)
-                                .with(pos)
-                                .with(size_square(1.));
-                        },
-                        TileType::Wall => {
-                            commands
-                                .spawn(SpriteComponents {
-                                    sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-                                    material: materials.wall_material.clone(),
-                                    ..Default::default()
-                                })
-                                .with(TileType::Wall)
-                                .with(pos)
-                                .with(size_square(1.));
-                        }
+    let window = windows.get_primary().unwrap();
+
+    for y in 0..window.height() {
+        for x in 0..window.width() {
+            let pos = Point::new(x, y);
+            let idx = map_idx(x as i32, y as i32);
+            if map_builder.map.in_bounds(pos) {
+                match map_builder.map.tiles[idx] {
+                    TileType::Floor => {
+                        commands
+                            .spawn(SpriteComponents {
+                                sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+                                material: materials.floor_material.clone(),
+                                ..Default::default()
+                            })
+                            .with(TileType::Floor)
+                            .with(pos)
+                            .with(size_square(1.));
+                    },
+                    TileType::Wall => {
+                        commands
+                            .spawn(SpriteComponents {
+                                sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+                                material: materials.wall_material.clone(),
+                                ..Default::default()
+                            })
+                            .with(TileType::Wall)
+                            .with(pos)
+                            .with(size_square(1.));
                     }
                 }
             }
-        })
+        }
+    }
 }

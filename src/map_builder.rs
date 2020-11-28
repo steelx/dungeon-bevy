@@ -3,7 +3,7 @@ use rand::Rng;
 use bracket_geometry::prelude::{Rect, Point};
 use rand::rngs::ThreadRng;
 
-const NUM_ROOMS: usize = 5;
+const NUM_ROOMS: usize = 20;
 
 pub struct MapBuilder {
     pub map: Map,
