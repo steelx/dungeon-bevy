@@ -1,12 +1,12 @@
 use crate::prelude::*;
 use bracket_geometry::prelude::Point;
 
-pub fn spawn_player(mut commands: Commands, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
-    // SpriteComponents is a Bundle of components,
+pub fn spawn_player(commands: &mut Commands, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
+    // SpriteBundle is a Bundle of components,
     // that means we get a ** Transform ** component,
     // among a bunch of others (Sprite, Mesh, Draw, Rotation, Scale, etc).
     commands
-        .spawn(SpriteComponents {
+        .spawn(SpriteBundle {
             sprite: Sprite::new(Vec2::new(10.0, 10.0)),
             material: materials.player_material.clone(),
             ..Default::default()
@@ -16,7 +16,7 @@ pub fn spawn_player(mut commands: Commands, map_builder: Res<MapBuilder>, materi
         .with(size_square(0.8));
 }
 
-pub fn spawn_monster(mut commands: Commands, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
+pub fn spawn_monster(commands: &mut Commands, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
     map_builder
         .rooms
         .iter()
@@ -24,7 +24,7 @@ pub fn spawn_monster(mut commands: Commands, map_builder: Res<MapBuilder>, mater
         .map(|r| r.center())
         .for_each(|pos| {
             commands
-                .spawn(SpriteComponents {
+                .spawn(SpriteBundle {
                     sprite: Sprite::new(Vec2::new(10.0, 10.0)),
                     material: materials.monster_material.clone(),
                     ..Default::default()
@@ -35,19 +35,19 @@ pub fn spawn_monster(mut commands: Commands, map_builder: Res<MapBuilder>, mater
         });
 }
 
-pub fn spawn_rooms(mut commands: Commands, windows: Res<Windows>, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
+pub fn spawn_rooms(commands: &mut Commands, windows: Res<Windows>, map_builder: Res<MapBuilder>, materials: Res<Materials>) {
     // dbg!(&map_builder.rooms);
     let window = windows.get_primary().unwrap();
 
-    for y in 0..window.height() {
-        for x in 0..window.width() {
+    for y in 0..window.height() as i32 {
+        for x in 0..window.width() as i32 {
             let pos = Point::new(x, y);
-            let idx = map_idx(x as i32, y as i32);
+            let idx = map_idx(x, y);
             if map_builder.map.in_bounds(pos) {
                 match map_builder.map.tiles[idx] {
                     TileType::Floor => {
                         commands
-                            .spawn(SpriteComponents {
+                            .spawn(SpriteBundle {
                                 sprite: Sprite::new(Vec2::new(10.0, 10.0)),
                                 material: materials.floor_material.clone(),
                                 ..Default::default()
@@ -58,7 +58,7 @@ pub fn spawn_rooms(mut commands: Commands, windows: Res<Windows>, map_builder: R
                     },
                     TileType::Wall => {
                         commands
-                            .spawn(SpriteComponents {
+                            .spawn(SpriteBundle {
                                 sprite: Sprite::new(Vec2::new(10.0, 10.0)),
                                 material: materials.wall_material.clone(),
                                 ..Default::default()

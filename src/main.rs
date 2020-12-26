@@ -24,8 +24,8 @@ fn main() {
         .add_resource(ClearColor(Color::hex("003049").unwrap()))
         .add_resource(WindowDescriptor {
             title: "Dungeon!".to_string(),
-            width: 800,
-            height: 800,
+            width: 800_f32,
+            height: 800_f32,
             ..Default::default()
         })
         .add_startup_system(setup.system())
@@ -38,8 +38,8 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
-    commands.spawn(Camera2dComponents::default());
+fn setup(commands: &mut Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
+    commands.spawn(Camera2dBundle::default());
 
     commands.insert_resource(Materials {
         wall_material: materials.add(Color::hex("22223b").unwrap().into()),

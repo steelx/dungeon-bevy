@@ -3,8 +3,8 @@ use bracket_geometry::prelude::Point;
 
 pub fn point_translation(
     windows: Res<Windows>,
-    mut q: Query<Without<TileType, (&Point, &mut Transform)>>,
-    mut map: Query<With<TileType, (&Point, &mut Transform)>>,
+    mut q: Query<(&Point, &mut Transform), Without<TileType>>,
+    mut map: Query<(&Point, &mut Transform), With<TileType>>,
 ) {
 
     fn convert(pos: f32, bound_window: f32, bound_game: f32) -> f32 {

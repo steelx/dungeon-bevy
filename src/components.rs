@@ -10,6 +10,8 @@ pub struct Materials {
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Player;
+pub struct Wall;
+pub struct Floor;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Enemy;
